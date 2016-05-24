@@ -1,0 +1,70 @@
+Elm.Main = Elm.Main || {};
+Elm.Main.make = function (_elm) {
+   "use strict";
+   _elm.Main = _elm.Main || {};
+   if (_elm.Main.values)
+   return _elm.Main.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Main",
+   $Basics = Elm.Basics.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $Http = Elm.Http.make(_elm),
+   $Json$Decode = Elm.Json.Decode.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $Task = Elm.Task.make(_elm);
+   var myMailbox = $Signal.mailbox("");
+   var sendMe = $Signal.send(myMailbox.address);
+   var sendMeError = function (error) {
+      return sendMe(function () {
+         switch (error.ctor)
+         {case "BadResponse":
+            return A2($Basics._op["++"],
+              "bad respose, code : ",
+              A2($Basics._op["++"],
+              $Basics.toString(error._0),
+              A2($Basics._op["++"],
+              " msg : ",
+              error._1)));
+            case "Timeout":
+            return "timeout";
+            case "UnexpectedPayload":
+            return A2($Basics._op["++"],
+              "unexpect payload : ",
+              error._0);}
+         _U.badCase($moduleName,
+         "between lines 26 and 36");
+      }());
+   };
+   var helloWorldTask = A2($Http.get,
+   A2($Json$Decode.object1,
+   $Basics.identity,
+   A2($Json$Decode._op[":="],
+   "mg",
+   $Json$Decode.string)),
+   "http://localhost:8080");
+   var helloWorldRunner = Elm.Native.Task.make(_elm).perform(A2($Task.onError,
+   A2($Task.andThen,
+   helloWorldTask,
+   sendMe),
+   sendMeError));
+   var main = A2($Signal.map,
+   function (result) {
+      return A2($Html.div,
+      _L.fromArray([]),
+      _L.fromArray([$Html.text(result)]));
+   },
+   myMailbox.signal);
+   _elm.Main.values = {_op: _op
+                      ,main: main
+                      ,helloWorldTask: helloWorldTask
+                      ,myMailbox: myMailbox
+                      ,sendMe: sendMe
+                      ,sendMeError: sendMeError};
+   return _elm.Main.values;
+};

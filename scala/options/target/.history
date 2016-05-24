@@ -1,0 +1,17 @@
+run
+compile
+run
+compile
+run
+compile
+run
+compile
+List(1,2,3)
+compile
+run
+compile
+sbt run
+run
+compile
+run
+compile
